@@ -22,7 +22,7 @@ const Search = React.memo(props => {
             amount: responseData[key].amount
           });
         }
-        //onLoadIngredients(loadedIngredients); //props.onLoadIngredients(loadedIngredients);
+        onLoadIngredients(loadedIngredients); //props.onLoadIngredients(loadedIngredients);
       });
   }, [enteredFilter, onLoadIngredients]);
 
