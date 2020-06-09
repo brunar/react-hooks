@@ -8,10 +8,18 @@ const Ingredients = () => {
   const [userIngredients, setUserIngredients] = useState([]); //initial state an array empty
 
   const addIngredientHandler = ingredient => {
-    setUserIngredients(prevIngredients => [
-      ...prevIngredients,
-      { id: Math.random().toString(), ...ingredient }
-    ])
+    fetch('https://react-hooks-update-bf465.firebaseio.com//ingredients.json', {
+      method: 'POST',
+      body: JSON.stringify(ingredient),
+      headers: { 'Content-Type': 'application/json' }
+    }).then(response => {
+      return response.json();
+    }).then(responseData => {
+      setUserIngredients(prevIngredients => [
+        ...prevIngredients,
+        { id: responseData.name, ...ingredient } //responseData Arg that's .name come from firebase, name is a unic the id on firebase
+      ]);
+    });
   }
 
   const removeIngredientHandler = ingredientId => {
