@@ -22,6 +22,10 @@ const Ingredients = () => {
       });
   }, []);
 
+  useEffect(() => {
+    console.log('RENDERING INGREDIENTS', userIngredients);
+  }, [userIngredients]);
+
   const addIngredientHandler = ingredient => {
     fetch('https://react-hooks-update-bf465.firebaseio.com//ingredients.json', {
       method: 'POST',
