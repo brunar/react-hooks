@@ -27,7 +27,8 @@ const Ingredients = () => {
     data,
     sendRequest,
     reqExtra,
-    reqIdentifier
+    reqIdentifier,
+    clear
   } = useHttp(); // The same as return from hooks/http.js if was return [] here bring as array also, or can be an object {}
 
   useEffect(() => {
@@ -65,10 +66,6 @@ const Ingredients = () => {
     )
   }, [sendRequest]);
 
-  const clearError = useCallback(() => {
-    //dispatchHttp({ type: 'CLEAR' });
-  }, []);
-
   const ingredientList = useMemo(() => {
     return (
       <IngredientList
@@ -79,7 +76,7 @@ const Ingredients = () => {
 
   return (
     <div className="App">
-      {error && <ErrorModal onClose={clearError}>{error}</ErrorModal>}
+      {error && <ErrorModal onClose={clear}>{error}</ErrorModal>}
       <IngredientForm
         onAddIngredient={addIngredientHandler}
         loading={isLoading} />
