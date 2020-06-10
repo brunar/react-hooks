@@ -16,7 +16,7 @@ const Ingredients = () => {
   }, []);
 
   const addIngredientHandler = ingredient => {
-    fetch('https://react-hooks-update-bf465.firebaseio.com//ingredients.json', {
+    fetch('https://react-hooks-update-bf465.firebaseio.com/ingredients.json', {
       method: 'POST',
       body: JSON.stringify(ingredient),
       headers: { 'Content-Type': 'application/json' }
@@ -31,9 +31,13 @@ const Ingredients = () => {
   }
 
   const removeIngredientHandler = ingredientId => {
-    setUserIngredients(prevIngredients =>
-      prevIngredients.filter(ingredient => ingredient.id !== ingredientId)
-    )
+    fetch(`https://react-hooks-update-bf465.firebaseio.com/ingredients/${ingredientId}.json`, {
+      method: 'DELETE',
+    }).then(response => {
+      setUserIngredients(prevIngredients =>
+        prevIngredients.filter(ingredient => ingredient.id !== ingredientId)
+      );
+    });
   }
 
   return (
