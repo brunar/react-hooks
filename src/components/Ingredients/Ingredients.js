@@ -21,45 +21,47 @@ const ingredientReducer = (currentIngredients, action) => {
 
 const Ingredients = () => {
   const [userIngredients, dispatch] = useReducer(ingredientReducer, []);
-  const { isLoading, error, data, sendRequest } = useHttp(); // The same as return from hooks/http.js if was return [] here bring as array also, or can be an object {}
-  //const [userIngredients, setUserIngredients] = useState([]); //initial state an array empty
-  //const [isLoading, setIsLoading] = useState(false);
-  //const [errorState, setErrorState] = useState();
+  const {
+    isLoading,
+    error,
+    data,
+    sendRequest,
+    reqExtra,
+    reqIdentifier
+  } = useHttp(); // The same as return from hooks/http.js if was return [] here bring as array also, or can be an object {}
 
   useEffect(() => {
-    console.log('RENDERING INGREDIENTS', userIngredients);
-  }, [userIngredients]);
+    if (!isLoading && !error && reqIdentifier === 'REMOVE_INGREDIENT') {
+      dispatch({ type: 'DELETE', id: reqExtra });
+    } else if (!isLoading && !error && reqIdentifier === 'ADD_INGREDIENT') {
+      dispatch({
+        type: 'ADD',
+        ingredient: { id: data.name, ...reqExtra }
+      });
+    }
+  }, [data, reqExtra, reqIdentifier, isLoading, error]);
 
   const filteredIngredientsHandler = useCallback(filteredIngredients => {
-    //setUserIngredients(filteredIngredients);
     dispatch({ type: 'SET', ingredients: filteredIngredients });
   }, []);
 
   const addIngredientHandler = useCallback(ingredient => {
-    // dispatchHttp({ type: 'SEND' });
-    // fetch('https://react-hooks-update-bf465.firebaseio.com/ingredients.json', {
-    //   method: 'POST',
-    //   body: JSON.stringify(ingredient),
-    //   headers: { 'Content-Type': 'application/json' }
-    // }).then(response => {
-    //   dispatchHttp({ type: 'RESPONSE' });
-    //   return response.json();
-    // }).then(responseData => {
-    //   // setUserIngredients(prevIngredients => [
-    //   //   ...prevIngredients,
-    //   //   { id: responseData.name, ...ingredient } //responseData Arg that's .name come from firebase, name is a unic the id on firebase
-    //   // ]);
-    //   dispatch({
-    //     type: 'ADD',
-    //     ingredient: { id: responseData.name, ...ingredient }
-    //   })
-    // });
-  }, []);
+    sendRequest(
+      'https://react-hooks-update-bf465.firebaseio.com/ingredients.json',
+      'POST',
+      JSON.stringify(ingredient),
+      ingredient,
+      'ADD_INGREDIENT'
+    );
+  }, [sendRequest]);
 
   const removeIngredientHandler = useCallback(ingredientId => {
     sendRequest(
       `https://react-hooks-update-bf465.firebaseio.com/ingredients/${ingredientId}.json`,
-      'DELETE'
+      'DELETE',
+      null,
+      ingredientId,
+      'REMOVE_INGREDIENT'
     )
   }, [sendRequest]);
 
