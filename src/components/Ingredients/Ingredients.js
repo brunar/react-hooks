@@ -3,10 +3,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import IngredientForm from './IngredientForm';
 import Search from './Search';
 import IngredientList from './IngredientList';
+import ErrorModal from '../UI/ErrorModal';
 
 const Ingredients = () => {
   const [userIngredients, setUserIngredients] = useState([]); //initial state an array empty
   const [isLoading, setIsLoading] = useState(false);
+  const [errorState, setErrorState] = useState();
 
   useEffect(() => {
     console.log('RENDERING INGREDIENTS', userIngredients);
@@ -42,11 +44,18 @@ const Ingredients = () => {
       setUserIngredients(prevIngredients =>
         prevIngredients.filter(ingredient => ingredient.id !== ingredientId)
       );
+    }).catch(error => {
+      setErrorState('Something went wrong!');//React Batch together this two only one lifecycle
+      setIsLoading(false);//React Batch together this two only one lifecycle
     });
   }
 
+  const clearError = () => {
+    setErrorState(null);
+  }
   return (
     <div className="App">
+      {errorState && <ErrorModal onClose={clearError}>{errorState}</ErrorModal>}
       <IngredientForm
         onAddIngredient={addIngredientHandler}
         loading={isLoading} />
